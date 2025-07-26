@@ -2,6 +2,7 @@
   "name": "fileease",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://Harish-Kurla-Shankarareddy.github.io/fileease",
   "type": "module",
   "scripts": {
     "dev": "vite",
