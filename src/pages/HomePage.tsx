@@ -43,6 +43,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateToConverter }) => 
       <Helmet>
   {/* Primary Meta Tags */}
   <title>FileEase – Free Image & PDF File Converter Online</title>
+  <meta name="google-site-verification" content="W_XbYVwR3RLRelFvFrV9q_LXzjgmZsgZQ_MFaAg5aqE" />
   <meta
     name="description"
     content="Convert JPG to PNG, PNG to JPG, and images to PDF instantly with FileEase. Free, fast, and secure file converter online."
@@ -52,7 +53,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateToConverter }) => 
     content="jpg to png, png to jpg, image to pdf, file converter, online converter, compress images, FileEase"
   />
   <meta name="author" content="FileEase Team" />
-  <meta name="google-site-verification" content="W_XbYVwR3RLRelFvFrV9q_LXzjgmZsgZQ_MFaAg5aqE" />
+  
 
   {/* Open Graph / Facebook */}
   <meta property="og:type" content="website" />
