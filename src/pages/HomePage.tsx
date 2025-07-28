@@ -52,6 +52,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateToConverter }) => 
     content="jpg to png, png to jpg, image to pdf, file converter, online converter, compress images, FileEase"
   />
   <meta name="author" content="FileEase Team" />
+  <meta name="google-site-verification" content="W_XbYVwR3RLRelFvFrV9q_LXzjgmZsgZQ_MFaAg5aqE" />
 
   {/* Open Graph / Facebook */}
   <meta property="og:type" content="website" />
