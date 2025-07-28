@@ -41,14 +41,39 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateToConverter }) => 
   return (
     <>
       <Helmet>
-        <title>FileEase - Professional File Conversion & Optimization</title>
-        <meta name="description" content="Convert and optimize your files including JPEG, PNG, and PDF with FileEase. Fast, secure, and browser-based." />
-        <meta property="og:title" content="FileEase - File Conversion & Optimization" />
-        <meta property="og:description" content="Convert and optimize your files including JPEG, PNG, and PDF formats with ease using FileEase." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://fileease-iota.vercel.app" />
-        <meta property="og:image" content="https://fileease-iota.vercel.app/og-image.png" />
-      </Helmet>
+  {/* Primary Meta Tags */}
+  <title>FileEase – Free Image & PDF File Converter Online</title>
+  <meta
+    name="description"
+    content="Convert JPG to PNG, PNG to JPG, and images to PDF instantly with FileEase. Free, fast, and secure file converter online."
+  />
+  <meta
+    name="keywords"
+    content="jpg to png, png to jpg, image to pdf, file converter, online converter, compress images, FileEase"
+  />
+  <meta name="author" content="FileEase Team" />
+
+  {/* Open Graph / Facebook */}
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://fileease-iota.vercel.app/" />
+  <meta property="og:title" content="FileEase – Free Image & PDF Converter" />
+  <meta
+    property="og:description"
+    content="Free and fast file converter for JPG, PNG, and PDF. No sign-up needed. 100% browser-based."
+  />
+  <meta property="og:image" content="https://fileease-iota.vercel.app/og-image.png" />
+
+  {/* Twitter */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://fileease-iota.vercel.app/" />
+  <meta name="twitter:title" content="FileEase – Free Image & PDF Converter" />
+  <meta
+    name="twitter:description"
+    content="Convert JPG, PNG, and PDF online. Fast, secure, and easy to use. No downloads."
+  />
+  <meta name="twitter:image" content="https://fileease-iota.vercel.app/og-image.png" />
+</Helmet>
+
 
       <div className="min-h-screen bg-white">
         {/* Hero Section */}
