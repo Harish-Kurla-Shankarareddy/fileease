@@ -42,40 +42,23 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateToConverter }) => 
     <>
       <Helmet>
   {/* Primary Meta Tags */}
-  <title>FileEase – Free Image & PDF File Converter Online</title>
+  <title>FileEase – Free Online Image & PDF Converter | JPG, PNG, PDF Tools</title>
   <meta name="google-site-verification" content="W_XbYVwR3RLRelFvFrV9q_LXzjgmZsgZQ_MFaAg5aqE" />
   <meta
     name="description"
-    content="Convert JPG to PNG, PNG to JPG, and images to PDF instantly with FileEase. Free, fast, and secure file converter online."
+    content="Convert images & PDFs instantly with FileEase! Free online tool for JPG to PNG, PNG to JPG, image to PDF conversions. No registration required - fast, secure processing in your browser."
   />
   <meta
     name="keywords"
-    content="jpg to png, png to jpg, image to pdf, file converter, online converter, compress images, FileEase"
+    content="jpg to png converter, png to jpg converter, image to pdf, online file converter, free image converter, compress images, web-based pdf tools, no signup file conversion, FileEase"
   />
   <meta name="author" content="FileEase Team" />
-  
+  <meta name="robots" content="index, follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="canonical" href="https://fileease-iota.vercel.app/" />
 
-  {/* Open Graph / Facebook */}
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://fileease-iota.vercel.app/" />
-  <meta property="og:title" content="FileEase – Free Image & PDF Converter" />
-  <meta
-    property="og:description"
-    content="Free and fast file converter for JPG, PNG, and PDF. No sign-up needed. 100% browser-based."
-  />
-  <meta property="og:image" content="https://fileease-iota.vercel.app/og-image.png" />
-
-  {/* Twitter */}
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://fileease-iota.vercel.app/" />
-  <meta name="twitter:title" content="FileEase – Free Image & PDF Converter" />
-  <meta
-    name="twitter:description"
-    content="Convert JPG, PNG, and PDF online. Fast, secure, and easy to use. No downloads."
-  />
-  <meta name="twitter:image" content="https://fileease-iota.vercel.app/og-image.png" />
+ 
 </Helmet>
-
 
       <div className="min-h-screen bg-white">
         {/* Hero Section */}
