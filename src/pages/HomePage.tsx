@@ -91,6 +91,25 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateToConverter }) => 
     }
     `}
   </script>
+  <script type="application/ld+json">
+  {`
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "FileEase",
+    "url": "https://fileease-iota.vercel.app",
+    "description": "Free online tool for JPG ↔ PNG conversion, image to PDF, and file compression. Fast, secure, no signup required.",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  `}
+</script>
+
 </Helmet>
 
 
