@@ -42,23 +42,57 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateToConverter }) => 
     <>
       <Helmet>
   {/* Primary Meta Tags */}
-  <title>FileEase – Free Online Image & PDF Converter | JPG, PNG, PDF Tools</title>
-  <meta name="google-site-verification" content="W_XbYVwR3RLRelFvFrV9q_LXzjgmZsgZQ_MFaAg5aqE" />
+  <title>FileEase | Free Online Image & PDF Converter (Fast & Secure)</title>
   <meta
     name="description"
-    content="Convert images & PDFs instantly with FileEase! Free online tool for JPG to PNG, PNG to JPG, image to PDF conversions. No registration required - fast, secure processing in your browser."
+    content="Free online file converter – convert JPG to PNG, PNG to JPG, and images to PDF instantly. No signup required. Fast, secure, and works right in your browser with advanced compression options."
   />
   <meta
     name="keywords"
-    content="jpg to png converter, png to jpg converter, image to pdf, online file converter, free image converter, compress images, web-based pdf tools, no signup file conversion, FileEase"
+    content="free jpg to png converter, png to jpg online, image to pdf converter, compress images online, file optimization tool, fast file converter, FileEase"
   />
   <meta name="author" content="FileEase Team" />
   <meta name="robots" content="index, follow" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="canonical" href="https://fileease-iota.vercel.app/" />
 
- 
+  {/* FAQ Schema */}
+  <script type="application/ld+json">
+    {`
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is FileEase free to use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, FileEase is completely free for converting images and PDFs. No signup or installation required."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is FileEase safe and secure?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, all file conversions are processed securely in your browser. Your files are never stored on our servers."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What file types does FileEase support?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "FileEase currently supports JPG, PNG, and PDF conversions with built-in compression and optimization."
+          }
+        }
+      ]
+    }
+    `}
+  </script>
 </Helmet>
+
 
       <div className="min-h-screen bg-white">
         {/* Hero Section */}
