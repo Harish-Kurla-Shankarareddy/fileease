@@ -126,8 +126,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateToConverter }) => 
               </h1>
               
               <p className="text-xl sm:text-2xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed">
-                FileEase is your free file conversion tool. 
-                Convert between JPEG, PNG, and PDF formats with advanced compression and quality control — all securely in your browser.
+                Free online file converter – instantly convert JPG to PNG, PNG to JPG, and images to PDF. Fast, secure, no signup required, with advanced compression options.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
