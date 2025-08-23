@@ -1,7 +1,8 @@
 FileEase
+
+
 A modern, sleek, and user-friendly web application for effortless file conversion. Transform your images, documents, and more between various formats with an intuitive drag-and-drop interface, all without leaving your browser.
 
-https://fileease-iota.vercel.app/opengraph-image.png <!-- You can add a direct screenshot later -->
 
 🌟 Features
 Multi-Format Support: Convert between a wide range of image, document, and potentially other file types.
