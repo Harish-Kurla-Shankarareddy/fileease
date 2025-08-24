@@ -18,7 +18,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const [selectedFiles, setSelectedFiles] = useState<FileItem[]>([]);
 
   const createFileItem = async (file: File): Promise<FileItem> => {
-    const preview = await FileProcessor.generatePreview(file).catch(() => '');
+    // Generate preview for images and PDFs
+    let preview = '';
+    if (file.type.startsWith('image/') || file.type === 'application/pdf') {
+      preview = await FileProcessor.generatePreview(file).catch(() => '');
+    }
     
     return {
       id: `${file.name}-${Date.now()}-${Math.random()}`,
@@ -39,6 +43,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       return isValidType && isValidSize;
     });
 
+    if (validFiles.length === 0) {
+      alert('Please select valid JPEG, PNG, or PDF files (max 50MB each)');
+      return;
+    }
+
     if (validFiles.length + selectedFiles.length > maxFiles) {
       alert(`Maximum ${maxFiles} files allowed`);
       return;
@@ -54,7 +63,19 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
-    handleFiles(e.dataTransfer.files);
+    
+    // Get files from data transfer
+    const files = Array.from(e.dataTransfer.files);
+    const hasValidFiles = files.some(file => acceptedTypes.includes(file.type));
+    
+    if (!hasValidFiles) {
+      alert('Please drop valid JPEG, PNG, or PDF files');
+      return;
+    }
+    
+    // Create a FileList-like object
+    const dataTransfer = e.dataTransfer;
+    handleFiles(dataTransfer.files);
   }, [selectedFiles]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -68,8 +89,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   }, []);
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
+    if (e.target.files && e.target.files.length > 0) {
       handleFiles(e.target.files);
+      // Reset the input to allow selecting the same file again
+      e.target.value = '';
     }
   };
 
@@ -77,6 +100,41 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     const newFiles = selectedFiles.filter(f => f.id !== id);
     setSelectedFiles(newFiles);
     onFilesSelected(newFiles);
+  };
+
+  // Get file icon based on type
+  const getFileIcon = (fileType: string, preview?: string) => {
+    if (preview) {
+      return (
+        <img 
+          src={preview} 
+          alt="Preview" 
+          className="w-12 h-12 object-cover rounded"
+          onError={(e) => {
+            // Fallback to icon if image fails to load
+            e.currentTarget.style.display = 'none';
+          }}
+        />
+      );
+    }
+    
+    if (fileType.startsWith('image/')) {
+      return <Image className="h-12 w-12 text-gray-400" />;
+    } else if (fileType === 'application/pdf') {
+      return <File className="h-12 w-12 text-blue-400" />;
+    }
+    
+    return <File className="h-12 w-12 text-gray-400" />;
+  };
+
+  // Get file type label
+  const getFileTypeLabel = (fileType: string) => {
+    if (fileType.startsWith('image/')) {
+      return fileType.split('/')[1].toUpperCase();
+    } else if (fileType === 'application/pdf') {
+      return 'PDF';
+    }
+    return 'File';
   };
 
   return (
@@ -119,38 +177,38 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
       {selectedFiles.length > 0 && (
         <div className="mt-6">
-          <h4 className="text-lg font-semibold mb-4">Selected Files ({selectedFiles.length}/{maxFiles})</h4>
+          <h4 className="text-lg font-semibold mb-4">
+            Selected Files ({selectedFiles.length}/{maxFiles})
+          </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {selectedFiles.map((fileItem) => (
-              <div key={fileItem.id} className="bg-white rounded-lg shadow-md p-4 relative">
+              <div key={fileItem.id} className="bg-white rounded-lg shadow-md p-4 relative group">
                 <button
                   onClick={() => removeFile(fileItem.id)}
-                  className="absolute top-2 right-2 p-1 bg-red-100 hover:bg-red-200 rounded-full transition-colors"
+                  className="absolute top-2 right-2 p-1 bg-red-100 hover:bg-red-200 rounded-full transition-colors opacity-0 group-hover:opacity-100"
                   aria-label="Remove file"
                 >
                   <X className="h-4 w-4 text-red-600" />
                 </button>
                 
                 <div className="flex items-center space-x-3">
-                  {fileItem.preview ? (
-                    <img 
-                      src={fileItem.preview} 
-                      alt={fileItem.name}
-                      className="w-12 h-12 object-cover rounded"
-                    />
-                  ) : fileItem.type.startsWith('image/') ? (
-                    <Image className="h-12 w-12 text-gray-400" />
-                  ) : (
-                    <File className="h-12 w-12 text-gray-400" />
-                  )}
+                  <div className="relative">
+                    {getFileIcon(fileItem.type, fileItem.preview)}
+                    <div className="absolute -bottom-1 -right-1 bg-gray-800 text-white text-xs px-1 py-0.5 rounded">
+                      {getFileTypeLabel(fileItem.type)}
+                    </div>
+                  </div>
                   
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
+                    <p className="text-sm font-medium text-gray-900 truncate" title={fileItem.name}>
                       {fileItem.name}
                     </p>
                     <p className="text-xs text-gray-500">
                       {FileProcessor.formatFileSize(fileItem.size)}
                     </p>
+                    {fileItem.type === 'application/pdf' && (
+                      <p className="text-xs text-blue-600 mt-1">PDF Document</p>
+                    )}
                   </div>
                 </div>
               </div>

@@ -14,7 +14,7 @@ export interface FileItem {
 }
 
 export interface ConversionOptions {
-  format: 'jpeg' | 'png' | 'pdf';
+  format: 'jpeg' | 'png' | 'pdf' | 'docx';
   quality: number;
   optimize: boolean;
 }
@@ -26,7 +26,9 @@ export type ConversionType =
   | 'png-to-pdf'
   | 'optimize-jpeg'
   | 'optimize-png'
-  | 'optimize-pdf';
+  | 'pdf-to-jpeg'    // Add this
+  | 'pdf-to-png'     // Add this
+  | 'pdf-to-word';   // Add this
 
 export interface ProcessingState {
   isProcessing: boolean;

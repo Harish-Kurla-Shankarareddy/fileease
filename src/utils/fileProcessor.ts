@@ -1,5 +1,23 @@
 import jsPDF from 'jspdf';
+import * as pdfjs from 'pdfjs-dist';
+import JSZip from 'jszip';
 import { FileItem, ConversionOptions } from '../types';
+
+
+// Dynamic import to handle worker setup correctly
+const initializePdfJs = async () => {
+  try {
+    // Try to use the built-in worker first
+    const pdfjsWorker = await import('pdfjs-dist/build/pdf.worker.min.mjs');
+    pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker.default;
+  } catch (error) {
+    console.warn('PDF.js worker not available, falling back to main thread');
+    // If worker fails to load, operations will run in main thread
+  }
+};
+
+// Initialize PDF.js
+initializePdfJs().catch(console.error);
 
 export class FileProcessor {
   static async convertImage(
@@ -172,6 +190,120 @@ export class FileProcessor {
     return this.convertImage(file, format, quality);
   }
 
+  // PDF to Image conversion (for both JPEG and PNG)
+  static async convertPdfToImage(pdfFile: File, format: 'jpeg' | 'png', quality: number = 0.9): Promise<Blob> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const pdfData = await pdfFile.arrayBuffer();
+        const pdf = await pdfjs.getDocument({ data: pdfData }).promise;
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        if (!ctx) {
+          reject(new Error('Canvas context not available'));
+          return;
+        }
+        
+        // Process each page
+        const imageBlobs: Blob[] = [];
+        
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 2.0 });
+          
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          
+          await page.render({
+            canvasContext: ctx,
+            viewport: viewport
+          }).promise;
+          
+          // Convert canvas to blob
+          const blob = await new Promise<Blob>((resolve, reject) => {
+            canvas.toBlob(
+              blob => {
+                if (blob) {
+                  resolve(blob);
+                } else {
+                  reject(new Error('Failed to convert canvas to blob'));
+                }
+              },
+              format === 'jpeg' ? 'image/jpeg' : 'image/png',
+              quality
+            );
+          });
+          
+          imageBlobs.push(blob);
+        }
+        
+        // If there's only one page, return that image
+        if (imageBlobs.length === 1) {
+          resolve(imageBlobs[0]);
+        } else {
+          // For multi-page PDFs, create a zip file with all images
+          const zip = new JSZip();
+          imageBlobs.forEach((blob, index) => {
+            zip.file(`page-${index + 1}.${format}`, blob);
+          });
+          
+          const zipBlob = await zip.generateAsync({ type: 'blob' });
+          resolve(zipBlob);
+        }
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  // PDF to Word conversion
+  static async convertPdfToWord(pdfFile: File): Promise<Blob> {
+    try {
+      // Extract text from PDF
+      const pdfData = await pdfFile.arrayBuffer();
+      const pdf = await pdfjs.getDocument({ data: pdfData }).promise;
+      let textContent = '';
+      
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const text = await page.getTextContent();
+        textContent += text.items.map((item: any) => item.str).join(' ') + '\n\n';
+      }
+      
+      // Create a simple Word document (DOCX) using a template
+      // Note: This creates a basic document with just text
+      // For more advanced features, consider using a library like docx.js
+      
+      // Create a simple HTML document that can be opened as a Word document
+      const htmlContent = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office" 
+              xmlns:w="urn:schemas-microsoft-com:office:word" 
+              xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+          <meta charset="utf-8">
+          <title>${pdfFile.name.replace('.pdf', '')}</title>
+          <style>
+            body { font-family: Arial, sans-serif; font-size: 12pt; }
+            p { margin: 0 0 12pt; }
+          </style>
+        </head>
+        <body>
+          <div>${textContent.replace(/\n/g, '</div><div>')}</div>
+        </body>
+        </html>
+      `;
+      
+      // Create a Blob with the HTML content that can be opened in Word
+      const blob = new Blob([htmlContent], { 
+        type: 'application/msword' 
+      });
+      
+      return blob;
+    } catch (error) {
+      throw new Error('Failed to convert PDF to Word: ' + error);
+    }
+  }
+
   static async generatePreview(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       if (file.type.startsWith('image/')) {
@@ -179,6 +311,33 @@ export class FileProcessor {
         reader.onload = (e) => resolve(e.target?.result as string);
         reader.onerror = () => reject(new Error('Failed to generate preview'));
         reader.readAsDataURL(file);
+      } else if (file.type === 'application/pdf') {
+        // Generate preview for PDF files
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          try {
+            const pdfData = new Uint8Array(e.target?.result as ArrayBuffer);
+            const pdf = await pdfjs.getDocument({ data: pdfData }).promise;
+            const page = await pdf.getPage(1);
+            const viewport = page.getViewport({ scale: 1.0 });
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            
+            await page.render({
+              canvasContext: ctx!,
+              viewport: viewport
+            }).promise;
+            
+            resolve(canvas.toDataURL('image/jpeg', 0.7));
+          } catch (error) {
+            // Fallback to generic PDF icon if preview generation fails
+            resolve('');
+          }
+        };
+        reader.readAsArrayBuffer(file);
       } else {
         resolve('');
       }
