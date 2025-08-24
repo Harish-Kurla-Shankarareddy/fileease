@@ -24,7 +24,7 @@ export const ConversionOptions: React.FC<ConversionOptionsProps> = ({
     { value: 'optimize-png', label: 'Optimize PNG', icon: Zap, group: 'optimize' },
     { value: 'pdf-to-jpeg', label: 'PDF → JPEG', icon: FileDown, group: 'pdf' },
     { value: 'pdf-to-png', label: 'PDF → PNG', icon: FileDown, group: 'pdf' },
-    { value: 'pdf-to-word', label: 'PDF → Word', icon: FileText, group: 'pdf' },
+    // REMOVE THIS LINE: PDF to Word option
   ];
 
   const qualityOptions = [
@@ -64,32 +64,34 @@ export const ConversionOptions: React.FC<ConversionOptionsProps> = ({
           
           <div className="space-y-4">
             {Object.entries(groupedConversions).map(([groupKey, group]) => (
-              <div key={groupKey}>
-                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
-                  {group.label}
-                </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
-                  {group.types.map((type) => {
-                    const IconComponent = type.icon;
-                    return (
-                      <button
-                        key={type.value}
-                        onClick={() => onConversionTypeChange(type.value as ConversionType)}
-                        className={`
-                          flex items-center justify-center p-3 rounded-lg border-2 transition-all duration-200
-                          ${conversionType === type.value
-                            ? 'border-blue-500 bg-blue-50 text-blue-700'
-                            : 'border-gray-200 hover:border-gray-300 text-gray-700'
-                          }
-                        `}
-                      >
-                        <IconComponent className="h-4 w-4 mr-2" />
-                        <span className="text-sm font-medium">{type.label}</span>
-                      </button>
-                    );
-                  })}
+              group.types.length > 0 && (
+                <div key={groupKey}>
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                    {group.label}
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+                    {group.types.map((type) => {
+                      const IconComponent = type.icon;
+                      return (
+                        <button
+                          key={type.value}
+                          onClick={() => onConversionTypeChange(type.value as ConversionType)}
+                          className={`
+                            flex items-center justify-center p-3 rounded-lg border-2 transition-all duration-200
+                            ${conversionType === type.value
+                              ? 'border-blue-500 bg-blue-50 text-blue-700'
+                              : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                            }
+                          `}
+                        >
+                          <IconComponent className="h-4 w-4 mr-2" />
+                          <span className="text-sm font-medium">{type.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              )
             ))}
           </div>
         </div>
@@ -135,22 +137,14 @@ export const ConversionOptions: React.FC<ConversionOptionsProps> = ({
           ) : (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <h4 className="text-sm font-semibold text-blue-800 mb-2">
-                {conversionType === 'pdf-to-word' 
-                  ? 'PDF to Word Conversion'
-                  : 'PDF to Image Conversion'
-                }
+                PDF to Image Conversion
               </h4>
               <p className="text-sm text-blue-700">
-                {conversionType === 'pdf-to-word' 
-                  ? 'PDF will be converted to Word document with text extraction. Multi-page PDFs will be combined into a single document.'
-                  : 'Multi-page PDFs will be converted to a ZIP file containing all pages as images.'
-                }
+                Multi-page PDFs will be converted to a ZIP file containing all pages as images.
               </p>
-              {conversionType !== 'pdf-to-word' && (
-                <p className="text-xs text-blue-600 mt-2">
-                  Note: Quality settings don't apply to PDF conversions
-                </p>
-              )}
+              <p className="text-xs text-blue-600 mt-2">
+                Note: Quality settings don't apply to PDF conversions
+              </p>
             </div>
           )}
         </div>
